@@ -1,5 +1,5 @@
-//Griffin Saiia, Gjs64
-//shell for Dumb Thermometer
+//Griffin Saiia
+//shell for robot
 //commands: 'sample' - calls "robo_polling", starts stream of temperature data, robo_server must be open
 //					'forward' - calls "drive.py", puts arduino in drive state
 //					'left' - calls "left.py", puts arduino in left turn state
