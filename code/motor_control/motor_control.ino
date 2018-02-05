@@ -1,3 +1,5 @@
+//Griffin Saiia, Motor Control
+
 // connect motor controller pins to Arduino digital pins
 // motor 1
 int enA = 10;
