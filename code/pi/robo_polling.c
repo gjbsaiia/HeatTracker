@@ -1,4 +1,4 @@
-//Griffin Saiia, Gjs64
+//Griffin Saiia
 
 //Executed on Pi
 //Sensor reading and client program
