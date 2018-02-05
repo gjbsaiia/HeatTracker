@@ -1,5 +1,4 @@
-//Griffin Saiia, gjs64
-//Dumb Thermometer, OS Final Project
+//Griffin Saiia
 
 //Executed on computer or phone acting as server.
 //Allows for Pi to stream back temperature data.
