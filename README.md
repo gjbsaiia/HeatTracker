@@ -35,19 +35,7 @@ pi:
  					  a null state indicated by " mode = 'a' ". This allows the Arduino to sit idle
 						until a different state is indicated by a python script which changes the value of "mode".
 
-To run any of the pi or motor_control code you need the hardware side of the project.
-So I've modified the pi set to be able to run without any of the hardware (sends fake data,
-updates the shell with fake movements) - this set of code is in the "simulated" folder.
 
-simulated:
-	This code must be run with the code in 'server'. It is to be run on the same computer.
-	simulated_shell.c: This is a shell script nearly the same as robo_shell.c; the difference
-	 						is that instead of running robo_polling.c, it runs simulated_polling.c - and
-							instead of talking to the arduino through various python scripts, it just prints
-							'movements'.
-	simulated_polling.c: Sends fake pre-loaded data to robo_server.c - only works for a data point
-											limit of 15.
-	makefile: Compiles simulated_shell.c and simulated_polling.c.
 
 Hardware:
 - Raspberry Pi gen 3
