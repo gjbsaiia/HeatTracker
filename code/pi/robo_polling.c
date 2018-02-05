@@ -1,5 +1,4 @@
 //Griffin Saiia, Gjs64
-//Dumb Thermometer, OS Final Project
 
 //Executed on Pi
 //Sensor reading and client program
