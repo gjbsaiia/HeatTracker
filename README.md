@@ -1,11 +1,11 @@
-# HeatTracker
+## HeatTracker
 Heat-Tracking Robot:
 
 The idea for this project was to have a Raspberry Pi that functions as a mobile client.
 The RPi has a DHT11 temperature sensor mounted on it, as well as two motors and an
 Arduino board. The RPi collects the temperature data and sends the data to the server,
 all the while accepting movement commands from an SSH'd computer (that is also the server).
-The polling (sensor reading) process works in parallel to all movements.
+The sensor polling process works in parallel to all movements.
 
 This was accomplished through 3 sets of source code files:
 
