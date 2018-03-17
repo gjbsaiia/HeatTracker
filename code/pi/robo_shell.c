@@ -1,5 +1,4 @@
-//Griffin Saiia
-//shell for robot
+//Griffin Saiia, Gjs64
 //commands: 'sample' - calls "robo_polling", starts stream of temperature data, robo_server must be open
 //					'forward' - calls "drive.py", puts arduino in drive state
 //					'left' - calls "left.py", puts arduino in left turn state
@@ -16,12 +15,37 @@
 #include <netinet/in.h>
 #define MAX_LINE 80 /* 80 chars per line, per command */
 
+void openSerial(){
+  pid_t pid = fork();
+  char *args[3];
+  if( pid == 0){
+  }
+  else{
+    args[0] = "python";
+    args[1] = "mode_relay.py";
+    args[2] = 0;
+    if(execvp(args[0], args) == -1){
+      error("serial connection failed\n");
+    }
+  }
+}
+
 int main(void) {
 	char line[50];
 	char *args[MAX_LINE/2 + 1];	/* command line (of 80) has max of 40 arguments */
 	int should_run = 1;
+	char buf[80];
 	pid_t pid;
-
+	openSerial();
+	//holds fifo object
+  int fd;
+  //FIFO file path
+  char* myFIFO = "/tmp/myfifo";
+  //create FIFO
+  if(mkfifo(myFIFO, 0666) == -1){
+    error("Named pipe failed.\n");
+  }
+	
 	printf("DumbThermometer> ");
 	while(should_run){
 		fflush(stdout);
@@ -38,75 +62,69 @@ int main(void) {
 		else{
 			if( !strcmp(args[0], "sample") || !strcmp(args[0], "forward") || !strcmp(args[0], "left") ||
 		 			!strcmp(args[0], "right") || !strcmp(args[0], "reverse") || !strcmp(args[0], "stop") ){
-				pid = fork();
-				if( pid == 0 ){
-					//starts stream of temperature data
-					if(!strcmp(args[0], "sample")){
-						fprintf(stdout, "Polling...\n");
-						fflush(stdout);
-						args[0] = "./robo_polling";
-						args[1] = 0;
-						execvp(args[0], args);
-					}
-					//moves robot forward
-					if(!strcmp(args[0], "forward")){
-						fprintf(stdout, "Forward...\n");
-						fflush(stdout);
-						args[0] = "python";
-						args[1] = "drive.py";
-						args[2] = 0;
-						execvp(args[0], args);
-					}
-					//turns robot left
-					if(!strcmp(args[0], "left")){
-						fprintf(stdout, "Turning left...\n");
-						fflush(stdout);
-						args[0] = "python";
-						args[1] = "left.py";
-						args[2] = 0;
-						execvp(args[0], args);
-					}
-					//turns robot right
-					if(!strcmp(args[0], "right")){
-						fprintf(stdout, "Turning right...\n");
-						fflush(stdout);
-						args[0] = "python";
-						args[1] = "right.py";
-						args[2] = 0;
-						execvp(args[0], args);
-					}
-					//puts robot in reverse
-					if(!strcmp(args[0], "reverse")){
-						fprintf(stdout, "Reversing...\n");
-						fflush(stdout);
-						args[0] = "python";
-						args[1] = "reverse.py";
-						args[2] = 0;
-						execvp(args[0], args);
-					}
-					//stops robot
-					if(!strcmp(args[0], "stop")){
-						fprintf(stdout, "Stopping...\n");
-						fflush(stdout);
-						args[0] = "python";
-						args[1] = "stop.py";
-						args[2] = 0;
-						execvp(args[0], args);
-					}
+				//starts stream of temperature data
+				if(!strcmp(args[0], "sample")){
+					fprintf(stdout, "Polling...\n");
+					fflush(stdout);
+					args[0] = "./robo_polling";
+					args[1] = 0;
+					execvp(args[0], args);
 				}
-				else{
-					//ensures prompt doesn't come before output
-					sleep(1);
-					printf("DumbThermometer> ");
+				//moves robot forward
+				if(!strcmp(args[0], "forward")){
+					fd = open(myFIFO, O_WRONLY);
+	        sprintf(buff, "%d", 1);
+	        write(fd, arr1, sizeof(arr1));
+		      close(fd);
+					fprintf(stdout, "Driving forward...\n");
+					fflush(stdout);
+				}
+				//turns robot left
+				if(!strcmp(args[0], "left")){
+					fd = open(myFIFO, O_WRONLY);
+	        sprintf(buff, "%d", 2);
+	        write(fd, arr1, sizeof(arr1));
+		      close(fd);
+					fprintf(stdout, "Turning left...\n");
+					fflush(stdout);
+				}
+				//turns robot right
+				if(!strcmp(args[0], "right")){
+					fd = open(myFIFO, O_WRONLY);
+	        sprintf(buff, "%d", 3);
+	        write(fd, arr1, sizeof(arr1));
+		      close(fd);
+					fprintf(stdout, "Turning right...\n");
+					fflush(stdout);
+				}
+				//puts robot in reverse
+				if(!strcmp(args[0], "reverse")){
+					fd = open(myFIFO, O_WRONLY);
+	        sprintf(buff, "%d", 4);
+	        write(fd, arr1, sizeof(arr1));
+		      close(fd);
+					fprintf(stdout, "Reversing...\n");
+					fflush(stdout);
+				}
+				//stops robot
+				if(!strcmp(args[0], "stop")){
+					fd = open(myFIFO, O_WRONLY);
+	        sprintf(buff, "%d", 5);
+	        write(fd, arr1, sizeof(arr1));
+		      close(fd);
+					fprintf(stdout, "Stopping...\n");
+					fflush(stdout);
 				}
 			}
 			else{
-				//because all accepted commands are caught in if statement
-				fprintf(stdout, "Error Invalid Command.\n");
-				sleep(1);
-				printf("DumbThermometer> ");
+				pid_t pid = fork();
+				if(pid == 1){
+					execvp(args[0]);
+				}
+				else{
+					wait(NULL);
+				}
 			}
-
 		}
 	}
 }
