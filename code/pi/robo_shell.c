@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -25,7 +27,7 @@ void openSerial(){
     args[1] = "mode_relay.py";
     args[2] = 0;
     if(execvp(args[0], args) == -1){
-      error("serial connection failed\n");
+      fprintf(stderr, "serial connection failed\n");
     }
   }
 }
@@ -43,9 +45,9 @@ int main(void) {
   char* myFIFO = "/tmp/myfifo";
   //create FIFO
   if(mkfifo(myFIFO, 0666) == -1){
-    error("Named pipe failed.\n");
+    fprintf(stderr, "Named pipe failed.\n");
   }
-	
+
 	printf("DumbThermometer> ");
 	while(should_run){
 		fflush(stdout);
@@ -62,56 +64,53 @@ int main(void) {
 		else{
 			if( !strcmp(args[0], "sample") || !strcmp(args[0], "forward") || !strcmp(args[0], "left") ||
 		 			!strcmp(args[0], "right") || !strcmp(args[0], "reverse") || !strcmp(args[0], "stop") ){
-				//starts stream of temperature data
-				if(!strcmp(args[0], "sample")){
-					fprintf(stdout, "Polling...\n");
-					fflush(stdout);
-					args[0] = "./robo_polling";
-					args[1] = 0;
-					execvp(args[0], args);
-				}
 				//moves robot forward
 				if(!strcmp(args[0], "forward")){
 					fd = open(myFIFO, O_WRONLY);
-	        sprintf(buff, "%d", 1);
-	        write(fd, arr1, sizeof(arr1));
+	        sprintf(buf, "%d", 1);
+	        write(fd, buf, sizeof(buf));
 		      close(fd);
+					bzero(buf, sizeof(buf));
 					fprintf(stdout, "Driving forward...\n");
 					fflush(stdout);
 				}
 				//turns robot left
 				if(!strcmp(args[0], "left")){
 					fd = open(myFIFO, O_WRONLY);
-	        sprintf(buff, "%d", 2);
-	        write(fd, arr1, sizeof(arr1));
+	        sprintf(buf, "%d", 2);
+	        write(fd, buf, sizeof(buf));
 		      close(fd);
+					bzero(buf, sizeof(buf));
 					fprintf(stdout, "Turning left...\n");
 					fflush(stdout);
 				}
 				//turns robot right
 				if(!strcmp(args[0], "right")){
 					fd = open(myFIFO, O_WRONLY);
-	        sprintf(buff, "%d", 3);
-	        write(fd, arr1, sizeof(arr1));
+	        sprintf(buf, "%d", 3);
+	        write(fd, buf, sizeof(buf));
 		      close(fd);
+					bzero(buf, sizeof(buf));
 					fprintf(stdout, "Turning right...\n");
 					fflush(stdout);
 				}
 				//puts robot in reverse
 				if(!strcmp(args[0], "reverse")){
 					fd = open(myFIFO, O_WRONLY);
-	        sprintf(buff, "%d", 4);
-	        write(fd, arr1, sizeof(arr1));
+	        sprintf(buf, "%d", 4);
+	        write(fd, buf, sizeof(buf));
 		      close(fd);
+					bzero(buf, sizeof(buf));
 					fprintf(stdout, "Reversing...\n");
 					fflush(stdout);
 				}
 				//stops robot
 				if(!strcmp(args[0], "stop")){
 					fd = open(myFIFO, O_WRONLY);
-	        sprintf(buff, "%d", 5);
-	        write(fd, arr1, sizeof(arr1));
+	        sprintf(buf, "%d", 5);
+	        write(fd, buf, sizeof(buf));
 		      close(fd);
+					bzero(buf, sizeof(buf));
 					fprintf(stdout, "Stopping...\n");
 					fflush(stdout);
 				}
@@ -119,10 +118,20 @@ int main(void) {
 			else{
 				pid_t pid = fork();
 				if(pid == 1){
-					execvp(args[0]);
+					//starts stream of temperature data
+					if(!strcmp(args[0], "sample")){
+						fprintf(stdout, "Polling...\n");
+						fflush(stdout);
+						args[0] = "./robo_polling";
+						args[1] = 0;
+						execvp(args[0], args);
+					}
+					else{
+						execvp(args[0], args);
+					}
 				}
 				else{
-					wait(NULL);
+					sleep(1);
 				}
 			}
 		}
