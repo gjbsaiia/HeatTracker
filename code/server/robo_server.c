@@ -111,8 +111,8 @@ int main(int argc, char *argv[])
       average = average + (double)tempData[j];
     }
     average = average / (double)limit;
-    //prints the room temperature
-    printf("The room temperature is %.02f*C\n", average);
+    //prints the average temperature of trip
+    printf("The average tempterature of this trip was %.02f*C\n", average);
     //closes socket
     close(newsockfd);
     close(sockfd);
