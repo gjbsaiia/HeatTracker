@@ -1,6 +1,6 @@
 ## HeatTracker 
-## ---> more recent project that essentially expands on this one [socCar](/gmarino2048/Real-Life-Rocket-League)	
-##      working with a team, I handled the construction/code of the car component.
+### ---> more recent project that essentially expands on this one [socCar](github.com/gmarino2048/Real-Life-Rocket-League)
+### working with a team, I handled the construction/code of the car component.
 Heat-Tracking Robot:
 
 The idea for this project was to have a Raspberry Pi that functions as a mobile client.
