@@ -1,5 +1,5 @@
 ## HeatTracker 
-### ---> more recent project that essentially expands on this one [socCar](https://github.com/gjbsaiia/keyboardCar)
+### ---> more recent project that essentially expands on this one [keyboardCar](https://github.com/gjbsaiia/keyboardCar)
 ### working with a team, I handled the construction/code of the car component.
 Heat-Tracking Robot:
 
